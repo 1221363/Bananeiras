@@ -1,5 +1,4 @@
 from supabase import create_client
-import tkinter as tk
 from tkinter import ttk
 import ttkbootstrap as tb
 from dotenv import load_dotenv
