@@ -53,3 +53,9 @@ Bananeiras/
 ├── requirements.txt (opcional)
 └── venv/
 ```
+
+## 🖼️ Imagens
+![Menu](images/menu.png)
+![Mostrar valores](images/mostrar_valores.png)
+![Inserir valores](images/inserir_valores.png)
+![Escolher opções](images/escolher_opções.png)
