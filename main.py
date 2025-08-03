@@ -7,25 +7,26 @@ import os
 # SEMPRE QUE FIZER ALTERAÇÕES CORRER ESTE COMANDO
 #pyinstaller --noconsole --onefile main.py
 
-
 load_dotenv()
 
-url = os.getenv("SUPABASE_URL")
+url = os.getenv("SUPABASE_URL") 
 key = os.getenv("SUPABASE_KEY")
-
 
 supabase = create_client(url, key)
 
 WINDOW_SIZE="600x500"
+TABELA_SIZE_SMALL="500x100"
+TABELA_SIZE_MEDIUM="800x600"
+TABELA_SIZE_BIG="1000x600"
 
 
 # === FUNÇÕES DE LISTAGEM ===
 def listar_stock():
     res = supabase.table("stockporprodutoarmazem").select("*").execute()
     titulo = "Stock por Produto e Armazém"
-    colunas = ["armazem", "produto", "tipo_produto", "quantidade"]
+    colunas = ["armazem", "tipo_produto", "produto", "quantidade"]
 
-    mostrar_tabela(titulo, res.data, colunas)
+    mostrar_tabela(titulo, res.data, colunas, TABELA_SIZE_BIG)
 
 
 def total_aplicado_ano():
@@ -39,10 +40,10 @@ def total_aplicado_ano():
         if not res.data:
             mostrar_info("Sem resultados", "Não foram encontrados dados para esse ano.")
             return
-        janela.destroy()  # Fecha a janela de input
+        janela.destroy()
         titulo = f"Total Aplicado no Ano {ano}"
         colunas = ["tipo_produto", "total_kg"]
-        mostrar_tabela(titulo, res.data, colunas)
+        mostrar_tabela(titulo, res.data, colunas, TABELA_SIZE_SMALL)
 
     janela = criar_janela("Total Aplicado por Ano")
 
@@ -59,8 +60,8 @@ def total_aplicado_ano():
 def valor_aplicado_terreno():
     res = supabase.table("valoraplicadoporterreno").select("*").execute()
     titulo = "Valor Aplicado por Terreno"
-    colunas = ["terreno", "tipo_produto", "total_kg", "ano", "temporada"]
-    mostrar_tabela(titulo, res.data, colunas)
+    colunas = ["temporada", "terreno", "produto", "total_kg"]
+    mostrar_tabela(titulo, res.data, colunas, TABELA_SIZE_BIG)
 
 
 def valor_aplicado_terreno_ano():
@@ -75,8 +76,8 @@ def valor_aplicado_terreno_ano():
             mostrar_info("Sem dados", "Não há dados para esse ano.")
             return
         titulo = f"Valor Aplicado por Terreno - Ano {ano}"
-        colunas = ["terreno", "tipo_produto", "total_kg"]
-        mostrar_tabela(titulo, res.data, colunas)
+        colunas = ["terreno", "produto", "total_kg"]
+        mostrar_tabela(titulo, res.data, colunas, TABELA_SIZE_MEDIUM)
 
     janela = criar_janela("Filtrar por Ano")
 
@@ -98,8 +99,8 @@ def valor_aplicado_terreno_temporada():
             mostrar_info("Sem dados", "Não há dados para essa temporada.")
             return
         titulo = f"Valor Aplicado por Terreno - Temporada {temporada}"
-        colunas = ["terreno", "tipo_produto", "total_kg"]
-        mostrar_tabela(titulo, res.data, colunas)
+        colunas = ["terreno", "produto", "total_kg"]
+        mostrar_tabela(titulo, res.data, colunas, TABELA_SIZE_MEDIUM)
 
     janela = criar_janela("Filtrar por Temporada")
 
@@ -111,18 +112,18 @@ def valor_aplicado_terreno_temporada():
 def listar_transferencias():
     res = supabase.table("transferenciasporarmazem").select("*").execute()
     titulo = "Histórico de Transferências"
-    colunas = ["armazem", "produto", "quantidade", "data"]
-    mostrar_tabela(titulo, res.data, colunas)
+    colunas = ["data", "armazem", "produto", "quantidade"]
+    mostrar_tabela(titulo, res.data, colunas, TABELA_SIZE_BIG)
 
 
-def mostrar_tabela(titulo, dados, colunas):
+def mostrar_tabela(titulo, dados, colunas, tamanho_tabela):
     root = tb.Window(themename="flatly")
     root.title(titulo)
-    root.geometry("1000x600")
+    root.geometry(tamanho_tabela)
 
     style = ttk.Style(root)
-    style.configure("Treeview.Heading", font=("Segoe UI", 12, "bold"))  # Cabeçalho maior e negrito
-    style.configure("Treeview", font=("Segoe UI", 10))  # Conteúdo regular
+    style.configure("Treeview.Heading", font=("Segoe UI", 12, "bold"))
+    style.configure("Treeview", font=("Segoe UI", 10))
     tree = ttk.Treeview(root, columns=colunas, show="headings", style="Treeview")
     tree["show"] = "headings"
     tree["selectmode"] = "browse"
